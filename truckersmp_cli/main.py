@@ -16,6 +16,7 @@ from .args import (
     create_arg_parser, process_actions_gamenames,
 )
 from .configfile import ConfigFile
+from .doctor import run_doctor
 from .gamestarter import StarterProton, StarterWine
 from .logger import Logger
 from .steamcmd import update_game
@@ -116,6 +117,10 @@ def main():
         sys.exit(f"Invalid configuration found in {Args.configfile}:\n{ex}")
     logger.add_file_handler(cfg.logfile)
     cfg.parse_settings()
+
+    # run diagnostics and quit
+    if Args.doctor:
+        sys.exit(run_doctor(get_version_string()))
 
     # check whether the executable of our inject program is present
     if not os.access(File.inject_exe, os.R_OK):

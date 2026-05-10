@@ -824,19 +824,19 @@ def wait_for_loginvdf_update(
 def find_most_recent_steamdir(loginvdf_paths):
     """
     Find Steam directory with most recently updated loginusers.vdf.
-    
+
     Returns Steam directory path or None if no valid paths found.
     """
     timestamps = get_mtime(loginvdf_paths)
-    
+
     if not timestamps or timestamps[-1] == 0:
         return None
-    
+
     max_timestamp = max(timestamps)
     for i, path in enumerate(loginvdf_paths):
         if timestamps[i] == max_timestamp:
             return os.path.dirname(os.path.dirname(path))
-    
+
     return None
 
 
@@ -897,7 +897,7 @@ def wait_for_steam(use_proton, loginvdf_paths, wine=None, env=None):
 def get_steamdir():
     """
     Get the Steam installation directory.
-    
+
     Returns the appropriate Steam directory based on configuration:
     - Flatpak Steam directory if using Flatpak
     - Specified directory if explicitly set
@@ -907,10 +907,10 @@ def get_steamdir():
     if Args.proton:
         if Args.flatpak_steam:
             return Dir.flatpak_steamdir
-        
+
         if Args.native_steam_dir != "auto":
             return Args.native_steam_dir
-        
+
         # find directory with most recently updated "loginusers.vdf" file
         return find_most_recent_steamdir(File.loginusers_paths)
     return Args.wine_steam_dir

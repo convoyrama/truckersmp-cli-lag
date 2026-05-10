@@ -23,6 +23,7 @@ ACTIONS = (
     ("downgradeandstart", '"downgrade" and "start"'),
     ("dstart", 'same as "downgradeandstart" ("downgrade" and "start")'),
     ("kill", "kill running processes in the same Wine prefix"),
+    ("doctor", "check local setup and print diagnostics"),
 )
 
 GAMES = (
@@ -347,7 +348,7 @@ def process_actions_gamenames():
     This function must be called after parse_args(namespace=Args)
     """
     # actions
-    Args.start = Args.update = Args.downgrade = Args.kill_procs = False
+    Args.start = Args.update = Args.downgrade = Args.kill_procs = Args.doctor = False
     if Args.action == "start":
         Args.start = True
     elif Args.action == "update":
@@ -360,7 +361,8 @@ def process_actions_gamenames():
         Args.downgrade = Args.update = Args.start = True
     elif Args.action == "kill":
         Args.kill_procs = True
-
+    elif Args.action == "doctor":
+        Args.doctor = True
     # game names
     Args.ets2 = Args.ats = Args.singleplayer = False
     if Args.game == "ets2mp":
