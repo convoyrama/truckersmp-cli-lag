@@ -303,6 +303,10 @@ SteamCMD can use your saved credentials for convenience.
         help="don't use wine-discord-ipc-bridge for Discord Rich Presence",
         action="store_true"))
     store_actions.append(parser.add_argument(
+        "--json",
+        help="""output machine-readable JSON for supported commands""",
+        action="store_true"))
+    store_actions.append(parser.add_argument(
         "--version",
         help="""print version information and quit""",
         action="store_true"))
