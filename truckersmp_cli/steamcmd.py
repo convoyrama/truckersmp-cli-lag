@@ -8,7 +8,6 @@ import io
 import logging
 import os
 import platform
-import pty
 import re
 import shutil
 import subprocess as subproc
@@ -16,6 +15,11 @@ import sys
 import tarfile
 import urllib.request
 from zipfile import ZipFile
+
+try:
+    import pty
+except ImportError:
+    pty = None
 
 from .truckersmp import determine_game_branch
 from .utils import check_and_unpack_tar, check_steam_process, get_steamdir
@@ -171,6 +175,10 @@ class SteamCMD:
 
     def _run_interactive(self, cmdline):
         """Run SteamCMD interactively with PTY for immediate I/O."""
+        if pty is None:
+            sys.exit(
+                "SteamCMD interactive PTY support is not available on this platform."
+            )
 
         def master_read(fd):
             data = os.read(fd, 1024)
