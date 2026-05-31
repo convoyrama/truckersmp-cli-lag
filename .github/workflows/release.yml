@@ -1,0 +1,57 @@
+name: TruckersMP CLI Lag Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Engine Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt -q update
+          sudo apt -q install --no-install-recommends gcc-mingw-w64-x86-64
+
+      - name: Build injector and completions
+        run: make
+
+      - name: Strip binary
+        run: x86_64-w64-mingw32-strip truckersmp_cli/truckersmp-cli.exe
+
+      - name: Create Release Package
+        run: |
+          VERSION=$(cat RELEASE)
+          PKG_NAME="truckersmp-cli-lag-$VERSION"
+          mkdir -p $PKG_NAME
+          
+          # Copy essential engine files
+          cp -r truckersmp_cli $PKG_NAME/
+          cp truckersmp-cli $PKG_NAME/
+          cp _truckersmp-cli $PKG_NAME/
+          cp truckersmp-cli.bash $PKG_NAME/
+          cp README.md $PKG_NAME/
+          cp LICENSE $PKG_NAME/
+          cp RELEASE $PKG_NAME/
+          
+          tar -czvf truckersmp-cli-lag.tar.gz $PKG_NAME/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: truckersmp-cli-lag-package
+          path: truckersmp-cli-lag.tar.gz
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          name: TruckersMP CLI Lag ${{ github.ref_name }}
+          files: truckersmp-cli-lag.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

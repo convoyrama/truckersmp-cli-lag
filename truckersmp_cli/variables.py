@@ -84,7 +84,7 @@ class File:
 class URL:
     """URLs."""
 
-    project = "https://github.com/truckersmp-cli/truckersmp-cli"
+    project = "https://github.com/convoyrama/truckersmp-cli-lag"
     project_doc_inst = project + "#install"
     project_releases = project + "/releases"
     dlurl = "download.ets2mp.com"

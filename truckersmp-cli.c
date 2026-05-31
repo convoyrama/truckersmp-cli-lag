@@ -6,7 +6,7 @@
  * capability: it perform the dll injection needed to start the mod and
  * nothing else.
  *
- * Author : lhark
+ * Author : lhark (Original) / Convoyrama (Fork)
  */
 
 #include <stdio.h>
