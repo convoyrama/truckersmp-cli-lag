@@ -20,7 +20,7 @@ jobs:
     name: Build Engine Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -53,16 +53,16 @@ jobs:
           tar -czvf truckersmp-cli-lag.tar.gz $PKG_NAME/
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: truckersmp-cli-lag-package
           path: truckersmp-cli-lag.tar.gz
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/') || github.event.inputs.publish_release == 'true'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.event.inputs.publish_release == 'true' && format('{0}', secrets.RELEASE_VERSION || '0.10.0') || github.ref_name }}
+          tag_name: v${{ github.event.inputs.publish_release == 'true' && (vars.RELEASE_VERSION || '0.10.0') || github.ref_name }}
           name: TruckersMP CLI Lag ${{ github.ref_name || format('v{0}', '0.10.0') }}
           files: truckersmp-cli-lag.tar.gz
           draft: false
