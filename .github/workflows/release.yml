@@ -36,9 +36,11 @@ jobs:
         run: x86_64-w64-mingw32-strip truckersmp_cli/truckersmp-cli.exe
 
       - name: Create Release Package
+        id: package
         run: |
           VERSION=$(cat RELEASE)
-          PKG_NAME="truckersmp-cli-lag-$VERSION"
+          PKG_NAME="truckersmp-cli-lag-v$VERSION"
+          FILE_NAME="$PKG_NAME.tar.gz"
           mkdir -p $PKG_NAME
           
           # Copy essential engine files
@@ -50,21 +52,23 @@ jobs:
           cp LICENSE $PKG_NAME/
           cp RELEASE $PKG_NAME/
           
-          tar -czvf truckersmp-cli-lag.tar.gz $PKG_NAME/
+          tar -czvf $FILE_NAME $PKG_NAME/
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "filename=$FILE_NAME" >> $GITHUB_OUTPUT
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: truckersmp-cli-lag-package
-          path: truckersmp-cli-lag.tar.gz
+          name: ${{ steps.package.outputs.filename }}
+          path: ${{ steps.package.outputs.filename }}
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/') || github.event.inputs.publish_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.event.inputs.publish_release == 'true' && (vars.RELEASE_VERSION || '0.10.0') || github.ref_name }}
-          name: TruckersMP CLI Lag ${{ github.ref_name || format('v{0}', '0.10.0') }}
-          files: truckersmp-cli-lag.tar.gz
+          tag_name: v${{ steps.package.outputs.version }}
+          name: TruckersMP CLI Lag v${{ steps.package.outputs.version }}
+          files: ${{ steps.package.outputs.filename }}
           draft: false
           prerelease: false
         env:

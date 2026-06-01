@@ -829,7 +829,7 @@ def find_most_recent_steamdir(loginvdf_paths):
     """
     timestamps = get_mtime(loginvdf_paths)
 
-    if not timestamps or timestamps[-1] == 0:
+    if not timestamps or max(timestamps) == 0:
         return None
 
     max_timestamp = max(timestamps)
